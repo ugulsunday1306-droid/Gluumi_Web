@@ -394,7 +394,6 @@
       padding: 8px 4px 14px;
       cursor: grab;
       user-select: none;
-      scroll-snap-type: x mandatory;
       overscroll-behavior-x: contain;
       scrollbar-width: none;
       -ms-overflow-style: none;
@@ -429,7 +428,11 @@
         0 0 10px rgba(183, 124, 255, 0.1);
       transition: transform 0.4s var(--ease-soft), box-shadow 0.4s ease;
       cursor: grab;
-      scroll-snap-align: start;
+      /* GPU Hardware Compositing layer acceleration */
+      will-change: transform;
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      perspective: 1000px;
     }
 
     .content-image-grid.is-dragging .content-image-wrap {
@@ -437,7 +440,7 @@
     }
 
     .content-image-wrap:hover {
-      transform: translateY(-2px) scale(1.02);
+      transform: translateY(-2px) scale(1.02) translateZ(0);
       box-shadow: 
         0 10px 24px rgba(0, 0, 0, 0.35),
         0 0 18px rgba(183, 124, 255, 0.25);
@@ -451,6 +454,10 @@
       object-fit: cover;
       pointer-events: none;
       -webkit-user-drag: none;
+      /* Optimize image decoding bottlenecks */
+      will-change: transform;
+      backface-visibility: hidden;
+      image-rendering: -webkit-optimize-contrast;
     }
 
     @media (max-width: 640px) {
@@ -730,25 +737,63 @@
       let scrollLeft = 0;
       let moved = false;
       
+      // Dynamic DOM Cloning Setup to establish a seamless infinite loop track
+      const children = Array.from(slider.children);
+      if (children.length === 0) return;
+      
+      // Deep clone all image children and append them to double the scroll track
+      children.forEach(child => {
+        const clone = child.cloneNode(true);
+        slider.appendChild(clone);
+      });
+      
+      // Measure and update the exact un-cloned scrollable width dynamically
+      let originalScrollWidth = slider.scrollWidth / 2;
+      
+      function updateOriginalWidth() {
+        const firstChild = slider.children[0];
+        const firstClone = slider.children[children.length];
+        if (firstChild && firstClone) {
+          originalScrollWidth = firstClone.offsetLeft - firstChild.offsetLeft;
+        } else {
+          originalScrollWidth = slider.scrollWidth / 2;
+        }
+      }
+      
+      // Initial dynamic measurement
+      updateOriginalWidth();
+      
       // Floating-point accumulator to prevent browser integer truncating freezes
       let scrollAccumulator = slider.scrollLeft;
-
+      
+      // Recalculate width on individual image load triggers to prevent early measurement errors
+      slider.querySelectorAll(".content-image").forEach(img => {
+        img.addEventListener("load", () => {
+          updateOriginalWidth();
+          scrollAccumulator = slider.scrollLeft;
+        });
+      });
+      
+      // Recalculate on browser window resizing
+      window.addEventListener("resize", () => {
+        updateOriginalWidth();
+        scrollAccumulator = slider.scrollLeft;
+      });
+      
       let autoplayTimer = null;
       let animationId = null;
 
       // Core animation loop
       function step() {
         if (!isDragging && !isCooldowned && !isHovered) {
-          const maxScroll = slider.scrollWidth - slider.clientWidth;
-          if (maxScroll > 0) {
-            // Smoothly reset back to 0 when reaching the end
-            if (scrollAccumulator >= maxScroll - 0.5) {
-              scrollAccumulator = 0;
-              slider.scrollLeft = 0;
-            } else {
-              scrollAccumulator += 0.5; // Smooth scroll speed (0.5px per frame)
-              slider.scrollLeft = Math.round(scrollAccumulator);
-            }
+          // If we reach the end of the original set, silently wrap back to 0 (fraction-aware)
+          if (scrollAccumulator >= originalScrollWidth) {
+            scrollAccumulator -= originalScrollWidth;
+            slider.scrollLeft = Math.floor(scrollAccumulator);
+          } else {
+            // Elegant cinematic crawl speed (0.2px per frame - reduced by half)
+            scrollAccumulator += 0.2; 
+            slider.scrollLeft = Math.floor(scrollAccumulator);
           }
         }
         animationId = requestAnimationFrame(step);
@@ -759,6 +804,7 @@
 
       // Mouse drag controls
       slider.addEventListener("mousedown", (event) => {
+        updateOriginalWidth();
         isDragging = true;
         isCooldowned = true; // Instantly halt autoplay transitions
         moved = false;
@@ -781,8 +827,16 @@
 
         if (Math.abs(walk) > 4) moved = true;
         
-        // Update both physical container scroll and floating accumulator
-        const targetScroll = scrollLeft - walk;
+        // Compute circular target scroll and adjust drag origin dynamic offsets
+        let targetScroll = scrollLeft - walk;
+        if (targetScroll >= originalScrollWidth) {
+          targetScroll -= originalScrollWidth;
+          scrollLeft -= originalScrollWidth;
+        } else if (targetScroll < 0) {
+          targetScroll += originalScrollWidth;
+          scrollLeft += originalScrollWidth;
+        }
+        
         slider.scrollLeft = targetScroll;
         scrollAccumulator = slider.scrollLeft;
       });
@@ -796,19 +850,22 @@
         // Sync accumulator once more
         scrollAccumulator = slider.scrollLeft;
         
-        // Wait 1.5 seconds cooldown period after drag release before resuming autoplay
+        // Wait 1.2 seconds cooldown period after drag release before resuming autoplay
         clearTimeout(autoplayTimer);
         isCooldowned = true;
         autoplayTimer = setTimeout(() => {
           isCooldowned = false;
-        }, 1500);
+        }, 1200);
       };
 
       window.addEventListener("mouseup", handleMouseUp);
 
-      // Pause autoplay on mouse hover
+      // Pause autoplay on mouse hover (only pause if we are not actively dragging)
       slider.addEventListener("mouseenter", () => {
-        isHovered = true;
+        updateOriginalWidth();
+        if (!isDragging) {
+          isHovered = true;
+        }
       });
 
       slider.addEventListener("mouseleave", () => {
