@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gloomy Virtual Accordion</title>
+  <style>
+    @font-face {
+      font-family: "SchoolSafetyRoundedSmile";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimDunggeunmisoTTF-R.woff2") format("woff2");
+      font-weight: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "YeongjuPunggiGinseng";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2310@1.0/YEONGJUPunggiGinsengTTF.woff2");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "GangwonEducationTteontteon";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "GangwonEducationTteontteon";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "GangwonEducationTteontteon";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "GangwonEducationTteontteon";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "GangwonEducationTteontteon";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "GangwonEducationTteontteon";
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff");
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --bg: #0c0d1a;
+      --bg2: #17153a;
+      --panel: #fbf9ff;
+      --purple: #57419b;
+      --purple2: #9f83df;
+      --purple3: #cbb8ff;
+      --glow: #b77cff;
+      --white: #f4efff;
+      --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      overflow-x: hidden;
+      background: var(--bg);
+      font-family: "SchoolSafetyRoundedSmile", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+    }
+
+    body {
+      padding: 18px 10px 34px;
+    }
+
+    .accordion-wrap {
+      width: min(100%, 1120px);
+      margin: 0 auto;
+    }
+
+    .accordion-title {
+      margin: 0 auto 18px;
+      padding: 24px 18px 28px;
+      text-align: center;
+      border-radius: 22px;
+      border: 2px solid rgba(215, 204, 255, 0.82);
+      background:
+        radial-gradient(circle at 14px 14px, rgba(190, 165, 255, 0.14) 2px, transparent 3px) 0 0 / 22px 22px,
+        linear-gradient(135deg, rgba(69, 169, 201, 0.16) 0%, transparent 30%),
+        linear-gradient(145deg, transparent 0%, transparent 48%, rgba(116, 89, 255, 0.24) 49%, rgba(127, 95, 255, 0.42) 78%, transparent 79%),
+        linear-gradient(135deg, var(--bg) 0%, var(--bg2) 44%, var(--purple) 72%, var(--glow) 100%);
+      box-shadow:
+        0 0 0 4px rgba(159, 131, 223, 0.08),
+        0 0 28px rgba(128, 95, 255, 0.35),
+        inset 0 0 54px rgba(255, 255, 255, 0.04);
+    }
+
+    .accordion-title h1 {
+      margin: 0;
+      color: var(--white);
+      font-size: clamp(30px, 5vw, 46px);
+      line-height: 1.1;
+      letter-spacing: 0.1em;
+      text-shadow:
+        0 2px 0 rgba(62, 42, 130, 0.85),
+        0 0 18px rgba(210, 190, 255, 0.62),
+        0 0 34px rgba(183, 124, 255, 0.36);
+    }
+
+    .title-line {
+      width: min(68%, 620px);
+      height: 2px;
+      margin: 20px auto 0;
+      background: linear-gradient(90deg, transparent, var(--glow), #ffffff, var(--purple2), transparent);
+      box-shadow: 0 0 16px var(--glow);
+    }
+
+    .accordion-item {
+      width: min(100%, 980px);
+      margin: 16px auto;
+      padding: 0;
+      text-align: center;
+      background: #ffffff;
+      border: 2px solid var(--purple3);
+      border-radius: 999px;
+      color: #39296f;
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        0 4px 0 var(--purple),
+        0 9px 0 rgba(48, 35, 115, 0.95),
+        0 0 22px rgba(183, 124, 255, 0.38);
+      transition:
+        border-radius 0.72s var(--ease-soft),
+        border-color 0.62s ease,
+        box-shadow 0.62s ease,
+        transform 0.35s ease;
+      will-change: border-radius, box-shadow, transform;
+    }
+
+    .accordion-item::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 16px 16px, rgba(190,165,255,0.14) 2px, transparent 3px) 0 0 / 24px 24px,
+        linear-gradient(135deg, var(--bg) 0%, var(--bg2) 42%, var(--purple) 72%, var(--glow) 100%);
+      opacity: 0;
+      transition: opacity 0.62s ease;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .accordion-item:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 5px 0 var(--purple),
+        0 10px 0 rgba(48, 35, 115, 0.95),
+        0 0 30px rgba(183, 124, 255, 0.58);
+    }
+
+    .accordion-item.is-open {
+      border-radius: 34px;
+      border-color: #ded3ff;
+      box-shadow:
+        0 4px 0 var(--purple),
+        0 9px 0 rgba(48, 35, 115, 0.95),
+        0 0 34px rgba(183, 124, 255, 0.7);
+    }
+
+    .accordion-item.is-open::before {
+      opacity: 1;
+    }
+
+    .accordion-button {
+      appearance: none;
+      -webkit-appearance: none;
+      border: 0;
+      cursor: pointer;
+      outline: none;
+      position: relative;
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: 17px 52px 16px;
+      color: #39296f;
+      font-family: "SchoolSafetyRoundedSmile", "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      font-size: clamp(23px, 3.2vw, 32px);
+      line-height: 1.12;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      background: linear-gradient(180deg, #ffffff 0%, #f8f4ff 100%);
+      overflow: hidden;
+      transition:
+        color 0.48s ease,
+        text-shadow 0.48s ease;
+      z-index: 1;
+    }
+
+    .accordion-button::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 16px 16px, rgba(190,165,255,0.14) 2px, transparent 3px) 0 0 / 24px 24px,
+        linear-gradient(135deg, var(--bg) 0%, var(--bg2) 42%, var(--purple) 72%, var(--glow) 100%);
+      opacity: 0;
+      transition: opacity 0.62s ease;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .accordion-button::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -125%;
+      width: 70%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent);
+      transform: skewX(-22deg);
+      transition: left 0.95s var(--ease-soft);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .button-text {
+      position: relative;
+      z-index: 2;
+      display: inline-block;
+    }
+
+    .arrow {
+      position: absolute;
+      left: 50%;
+      bottom: 3px;
+      transform: translateX(-50%);
+      color: var(--purple2);
+      font-size: 12px;
+      line-height: 1;
+      transition: transform 0.52s var(--ease-soft), color 0.48s ease;
+      z-index: 2;
+    }
+
+    .accordion-button:hover {
+      color: var(--glow);
+      text-shadow:
+        0 0 8px rgba(183, 124, 255, 0.95),
+        0 0 18px rgba(183, 124, 255, 0.55),
+        0 0 30px rgba(183, 124, 255, 0.26);
+    }
+
+    .accordion-item.is-open .accordion-button {
+      color: #f2ecff;
+      text-shadow:
+        0 0 10px rgba(220, 205, 255, 0.95),
+        0 0 22px rgba(183, 124, 255, 0.62);
+    }
+
+    .accordion-item.is-open .accordion-button::before {
+      opacity: 1;
+    }
+
+    .accordion-item.is-open .accordion-button::after {
+      left: 145%;
+    }
+
+    .accordion-item.is-open .arrow {
+      transform: translateX(-50%) rotate(180deg);
+      color: #efe7ff;
+    }
+
+    .panel {
+      max-height: 0;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      transition:
+        max-height 0.72s var(--ease-soft),
+        opacity 0.42s ease;
+      opacity: 0;
+    }
+
+    .accordion-item.is-open .panel {
+      opacity: 1;
+    }
+
+    .content {
+      padding: 30px 30px 34px;
+      color: #efeaff;
+      font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", sans-serif;
+      font-size: clamp(14px, 2.2vw, 17px);
+      line-height: 1.85;
+      background:
+        radial-gradient(circle at 16px 16px, rgba(190,165,255,0.16) 2px, transparent 3px) 0 0 / 24px 24px,
+        linear-gradient(135deg, rgba(68,170,200,0.12) 0%, transparent 28%),
+        linear-gradient(145deg, transparent 0%, transparent 48%, rgba(116,89,255,0.22) 49%, rgba(127,95,255,0.34) 78%, transparent 79%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+      border-top: 1px solid rgba(215, 204, 255, 0.56);
+      text-shadow: 0 0 8px rgba(150, 110, 255, 0.35);
+      transform: translateY(-8px);
+      filter: blur(2px);
+      transition:
+        transform 0.58s var(--ease-soft),
+        filter 0.58s var(--ease-soft);
+    }
+
+    .accordion-item.is-open .content {
+      transform: translateY(0);
+      filter: blur(0);
+    }
+
+    .content-title {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 5px 18px 8px;
+      color: #ffffff;
+      font-family: "SchoolSafetyRoundedSmile", "Malgun Gothic", sans-serif;
+      font-size: clamp(20px, 3vw, 27px);
+      font-weight: bold;
+      border-bottom: 2px solid var(--glow);
+      text-shadow:
+        0 0 10px rgba(183, 124, 255, 0.95),
+        0 0 20px rgba(183, 124, 255, 0.55);
+    }
+
+    .note {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 10px 16px;
+      color: #39296f;
+      background: rgba(255,255,255,0.94);
+      border-radius: 12px;
+      border: 1px solid #d8c9ff;
+      font-weight: 800;
+      text-shadow: none;
+      box-shadow: 0 0 18px rgba(183, 124, 255, 0.18);
+    }
+
+    .process {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      max-width: 820px;
+      margin: 8px auto 18px;
+    }
+
+    .step {
+      padding: 14px 10px;
+      border-radius: 14px;
+      color: #39296f;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid #d8c9ff;
+      font-weight: 900;
+      text-shadow: none;
+      box-shadow: 0 0 18px rgba(183, 124, 255, 0.15);
+    }
+
+    .content-image-grid {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 14px;
+      margin: 20px auto 10px;
+      width: 100%;
+      max-width: 100%;
+      justify-content: flex-start;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 8px 4px 14px;
+      cursor: grab;
+      user-select: none;
+      scroll-snap-type: x mandatory;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      touch-action: pan-x;
+    }
+
+    .content-image-grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .content-image-grid.is-dragging {
+      cursor: grabbing;
+      scroll-snap-type: none;
+    }
+
+    .content-image-grid.cols-1,
+    .content-image-grid.cols-2,
+    .content-image-grid.cols-3,
+    .content-image-grid.cols-4,
+    .content-image-grid.cols-auto {
+      max-width: 100%;
+    }
+
+    .content-image-wrap {
+      flex: 0 0 clamp(210px, 34vw, 300px);
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      border: 1px solid rgba(215, 204, 255, 0.3);
+      overflow: hidden;
+      box-shadow: 
+        0 6px 18px rgba(0, 0, 0, 0.25),
+        0 0 10px rgba(183, 124, 255, 0.1);
+      transition: transform 0.4s var(--ease-soft), box-shadow 0.4s ease;
+      cursor: grab;
+      scroll-snap-align: start;
+    }
+
+    .content-image-grid.is-dragging .content-image-wrap {
+      cursor: grabbing;
+    }
+
+    .content-image-wrap:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 
+        0 10px 24px rgba(0, 0, 0, 0.35),
+        0 0 18px rgba(183, 124, 255, 0.25);
+    }
+
+    .content-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-height: none;
+      object-fit: cover;
+      pointer-events: none;
+      -webkit-user-drag: none;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 12px 8px 28px;
+      }
+
+      .accordion-title {
+        padding: 20px 14px 24px;
+      }
+
+      .accordion-item {
+        margin: 13px auto;
+      }
+
+      .accordion-button {
+        padding-left: 42px;
+        padding-right: 42px;
+      }
+
+      .content {
+        padding: 24px 18px 28px;
+      }
+
+      .process {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+    /* Main Header Custom Font Override */
+    .accordion-title h1 {
+      font-family: "YeongjuPunggiGinseng", "SchoolSafetyRoundedSmile", sans-serif !important;
+    }
+
+    /* Item 1 Custom Font Override */
+    .item-font-0,
+    .item-font-0 .accordion-button,
+    .item-font-0 .content,
+    .item-font-0 .content-title,
+    .item-font-0 .step {
+      font-family: "GangwonEducationTteontteon", "SchoolSafetyRoundedSmile", "Pretendard", sans-serif !important;
+    }
+
+    /* Item 2 Custom Font Override */
+    .item-font-1,
+    .item-font-1 .accordion-button,
+    .item-font-1 .content,
+    .item-font-1 .content-title,
+    .item-font-1 .step {
+      font-family: "GangwonEducationTteontteon", "SchoolSafetyRoundedSmile", "Pretendard", sans-serif !important;
+    }
+
+    /* Item 3 Custom Font Override */
+    .item-font-2,
+    .item-font-2 .accordion-button,
+    .item-font-2 .content,
+    .item-font-2 .content-title,
+    .item-font-2 .step {
+      font-family: "GangwonEducationTteontteon", "SchoolSafetyRoundedSmile", "Pretendard", sans-serif !important;
+    }
+
+    /* Item 4 Custom Font Override */
+    .item-font-3,
+    .item-font-3 .accordion-button,
+    .item-font-3 .content,
+    .item-font-3 .content-title,
+    .item-font-3 .step {
+      font-family: "GangwonEducationTteontteon", "SchoolSafetyRoundedSmile", "Pretendard", sans-serif !important;
+    }
+
+    /* Item 5 Custom Font Override */
+    .item-font-4,
+    .item-font-4 .accordion-button,
+    .item-font-4 .content,
+    .item-font-4 .content-title,
+    .item-font-4 .step {
+      font-family: "GangwonEducationTteontteon", "SchoolSafetyRoundedSmile", "Pretendard", sans-serif !important;
+    }
+
+    /* Item 6 Custom Font Override */
+    .item-font-5,
+    .item-font-5 .accordion-button,
+    .item-font-5 .content,
+    .item-font-5 .content-title,
+    .item-font-5 .step {
+      font-family: "GangwonEducationTteontteon", "SchoolSafetyRoundedSmile", "Pretendard", sans-serif !important;
+    }
+  </style>
+</head>
+<body>
+  <main class="accordion-wrap">
+    <section class="accordion-title" aria-label="상세 안내 메뉴" data-font-family="YeongjuPunggiGinseng" data-font-url="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2310@1.0/YEONGJUPunggiGinsengTTF.woff2">
+      <h1>Guide</h1>
+      <div class="title-line"></div>
+    </section>
+
+    <section class="accordion-item item-font-0" data-font-family="GangwonEducationTteontteon" data-font-url="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff">
+      <button class="accordion-button" type="button" aria-expanded="false">
+        <span class="button-text">작업 순서</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="panel">
+        <div class="content">
+          <div class="content-title">Process</div><br />
+          <div class="process" aria-label="작업 진행 단계">
+            <div class="step">01. 상담</div>
+            <div class="step">02. 파츠 잦기</div>
+            <div class="step">03. 성형</div>
+            <div class="step">04. 페이셜</div>
+            <div class="step">05. 파츠 적용</div>
+            <div class="step">06. 포맷 선택</div>
+          </div>
+          작업 방향과 신청 내용에 따라 순서는 조금 달라질 수 있습니다.
+        </div>
+      </div>
+    </section>
+
+    <section class="accordion-item item-font-1" data-font-family="GangwonEducationTteontteon" data-font-url="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff">
+      <button class="accordion-button" type="button" aria-expanded="false">
+        <span class="button-text">신청 양식</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="panel">
+        <div class="content">
+          <div class="content-title">Order Form</div><br />
+          사용 아바타 / 원하는 분위기 / 참고 이미지 / 필요한 기능 / 희망 작업 범위를 함께 전달해주세요.설명이 구체적일수록 결과물이 더 정확하게 나옵니다.
+        </div>
+      </div>
+    </section>
+
+    <section class="accordion-item item-font-2" data-font-family="GangwonEducationTteontteon" data-font-url="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff">
+      <button class="accordion-button" type="button" aria-expanded="false">
+        <span class="button-text">보유 아바타</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="panel">
+        <div class="content">
+          <div class="content-title">Avatar List</div><br />
+          보유 중인 베이스 또는 작업 가능한 아바타 목록을 이 영역에 정리할 수 있습니다.부스 구매 에셋은 기본적으로 양측 구매를 기준으로 작업합니다.
+          <div class="content-image-grid cols-auto">
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/8a7426aa-ba62-4ef0-9e7d-2c8ea96e7c9b/i/5058077/a18424fe-a56e-411a-9c47-27c56909593c.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/f420c992-4225-4ce0-b751-3a4acdceaab6/i/4667400/1641b18e-eb97-4cbe-85fd-0f04cd53b46a.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/f420c992-4225-4ce0-b751-3a4acdceaab6/i/6082686/81021dbd-ca83-4c3b-8868-230e780b63a3.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/f420c992-4225-4ce0-b751-3a4acdceaab6/i/3390957/452e082f-67e8-480d-b697-9378977f41b0.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/f420c992-4225-4ce0-b751-3a4acdceaab6/i/2780069/8fe30c4c-f572-4158-9295-6203131453b9.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/8a7426aa-ba62-4ef0-9e7d-2c8ea96e7c9b/i/4035411/6f839883-1ab0-48fa-bfca-10c73ab7a33d.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/8a7426aa-ba62-4ef0-9e7d-2c8ea96e7c9b/i/3040745/5cba0a33-e79c-4275-bef2-39e4f6d17fa3.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/ed52788c-0b3b-4e38-9ded-1e5797daf0ef/i/3681787/2409bb9f-24f3-42dd-8ad6-89a0656f2166.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/ed52788c-0b3b-4e38-9ded-1e5797daf0ef/i/6106863/07bd77df-a8ee-4244-8c4e-16cf7cb584bb.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/87b70515-e32e-4a2e-bf41-317cf2c2177c/i/7502898/a2c93b99-de64-49f4-a76b-30ff769a5021.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/817e9a9a-020c-4fac-8b21-96f80d6e25cb/i/5650156/95fc778d-3254-45ca-8a6e-2590dc30f87c.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/817e9a9a-020c-4fac-8b21-96f80d6e25cb/i/8122803/d9c776e9-d7e4-4f7c-a091-c777beecf3bb.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/01965a9e-bce5-4027-bc0e-0b8e7df43c6e/i/6538026/182b133f-1c86-4ae8-8536-5e00f63b86cf.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/c80ffe79-d9d7-4481-bc64-40d80bcd71e6/i/5813187/9163df6c-cc4e-4a07-ace2-d22e3be58be8.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/c80ffe79-d9d7-4481-bc64-40d80bcd71e6/i/4340548/cb43c1f7-bbdf-4115-942a-491c32b1de24.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/61a3b2d7-b4b1-4f97-9e48-ffe959b26ae9/i/6405390/6e6332b4-d56c-4d2f-8f23-328f702949c8.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/1ae5d9f5-29a4-4574-ab86-a316c22db92a/i/6571299/7bda05bb-f9d5-45a8-811a-b95ac555beb8.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/61a3b2d7-b4b1-4f97-9e48-ffe959b26ae9/i/5354471/c42b543c-a334-4f18-bd26-a5cf23e2a61b.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/61a3b2d7-b4b1-4f97-9e48-ffe959b26ae9/i/3470989/a70bc916-21f3-4b06-ae3a-eb302058a0b5.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/4f15ee05-fb38-455e-81c3-4f1df93edd07/i/7328789/03b9c7b6-e4b5-45bc-ac80-e978ecd99630.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/96d1d589-6879-4d30-8891-a2c6b8d64186/i/5132797/68abd8ab-df67-449f-9625-b1b045a04884.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/3923a6a5-7600-4cc2-9240-d92591e77ceb/i/3923094/fe5cc48d-30bc-4c1c-8853-ba3f966e42ea.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/8e4c6e25-746f-4ea7-b9a8-51d10ed80b3b/i/3939858/f80a2721-ccbd-465f-991a-8bfa2bb7fff8.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/a724e93d-5634-41cf-ac1f-8f8985536a5a/i/2709610/6b1c737c-e9b4-406f-976b-ed5f88490259.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/4e6e372d-f626-416b-beec-b0f50d2c2743/i/4252664/feefdd8a-7aeb-4a32-8523-0831572e34d3.jpeg" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/2d6486ba-ae5e-4b5e-9c53-3db77a911fd4/i/6831821/d4f2c9aa-c5f1-441b-b805-6a70e8ff5c61.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/a238249a-3754-4828-9be4-c031f8e3662d/i/3190100/94d47ae0-e4ec-4147-b417-0ac636778a98.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/7ca85730-d4c0-45e1-81bc-92f88866e85c/i/4208278/8ce222fe-b5a3-436f-872b-964cb1aba587.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/a724e93d-5634-41cf-ac1f-8f8985536a5a/i/3659436/975cd340-c669-4298-906d-172b9b5b097a.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/8867f724-9eb3-4336-ab8e-687a91a84ba8/i/4213786/6012ccf6-4d32-470d-ba8a-430d437d9272.png" class="content-image" alt="보유 아바타 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://booth.pximg.net/c4b947e7-1f94-4f8b-aa56-955692b4769a/i/5776079/c2ecd1cb-cd26-4eec-b9ab-d183af77c116.png" class="content-image" alt="보유 아바타 이미지" /></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="accordion-item item-font-3" data-font-family="GangwonEducationTteontteon" data-font-url="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff">
+      <button class="accordion-button" type="button" aria-expanded="false">
+        <span class="button-text">분양</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="panel">
+        <div class="content">
+          <div class="content-title">Self-Created-Avatar</div><br />
+          작가가 직접 제작했던 아바타들을 간단한 작업을 거쳐 분양받습니다.
+          <div class="content-image-grid cols-4">
+            <div class="content-image-wrap"><img src="https://i.imgur.com/4ZXyZYs.png" class="content-image" alt="분양 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://i.imgur.com/hmN1MN6.jpeg" class="content-image" alt="분양 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://i.imgur.com/pLEABJc.jpeg" class="content-image" alt="분양 이미지" /></div>
+            <div class="content-image-wrap"><img src="https://i.imgur.com/K8nvKFx.jpeg" class="content-image" alt="분양 이미지" /></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="accordion-item item-font-4" data-font-family="GangwonEducationTteontteon" data-font-url="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff">
+      <button class="accordion-button" type="button" aria-expanded="false">
+        <span class="button-text">자주 묻는 질문</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="panel">
+        <div class="content">
+          <div class="content-title">FAQ</div><br />
+          작업 기간, 수정 가능 횟수, 파일 전달 방식, 추가 비용 발생 기준 등을 정리하는 영역입니다.
+        </div>
+      </div>
+    </section>
+
+    <section class="accordion-item item-font-5" data-font-family="GangwonEducationTteontteon" data-font-url="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEduPowerExtraBoldA.woff">
+      <button class="accordion-button" type="button" aria-expanded="false">
+        <span class="button-text">주의사항</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="panel">
+        <div class="content">
+          <div class="content-title">Notice</div><br />
+          작업 전 필요한 자료를 충분히 전달해주세요.외부 에셋, 헤어, 의상, 악세사리 등은 저작권과 구매 여부 확인이 필요할 수 있습니다.
+          <br /><span class="note">작업 전 상담을 통해 가능 여부를 먼저 확인합니다.</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const items = document.querySelectorAll(".accordion-item");
+
+    function closeItem(item) {
+      const button = item.querySelector(".accordion-button");
+      const panel = item.querySelector(".panel");
+
+      item.classList.remove("is-open");
+      button.setAttribute("aria-expanded", "false");
+      panel.style.maxHeight = "0px";
+    }
+
+    function openItem(item) {
+      const button = item.querySelector(".accordion-button");
+      const panel = item.querySelector(".panel");
+
+      item.classList.add("is-open");
+      button.setAttribute("aria-expanded", "true");
+      panel.style.maxHeight = panel.scrollHeight + "px";
+    }
+
+    items.forEach((item) => {
+      const button = item.querySelector(".accordion-button");
+
+      button.addEventListener("click", () => {
+        const isOpen = item.classList.contains("is-open");
+
+        items.forEach((otherItem) => {
+          if (otherItem !== item) closeItem(otherItem);
+        });
+
+        if (isOpen) {
+          closeItem(item);
+        } else {
+          openItem(item);
+        }
+      });
+    });
+
+    function refreshOpenPanels() {
+      document.querySelectorAll(".accordion-item.is-open .panel").forEach((panel) => {
+        panel.style.maxHeight = panel.scrollHeight + "px";
+      });
+    }
+
+    function enableDragScroll(slider) {
+      let isDragging = false;
+      let isCooldowned = false;
+      let isHovered = false;
+      
+      let startX = 0;
+      let scrollLeft = 0;
+      let moved = false;
+      
+      // Floating-point accumulator to prevent browser integer truncating freezes
+      let scrollAccumulator = slider.scrollLeft;
+
+      let autoplayTimer = null;
+      let animationId = null;
+
+      // Core animation loop
+      function step() {
+        if (!isDragging && !isCooldowned && !isHovered) {
+          const maxScroll = slider.scrollWidth - slider.clientWidth;
+          if (maxScroll > 0) {
+            // Smoothly reset back to 0 when reaching the end
+            if (scrollAccumulator >= maxScroll - 0.5) {
+              scrollAccumulator = 0;
+              slider.scrollLeft = 0;
+            } else {
+              scrollAccumulator += 0.5; // Smooth scroll speed (0.5px per frame)
+              slider.scrollLeft = Math.round(scrollAccumulator);
+            }
+          }
+        }
+        animationId = requestAnimationFrame(step);
+      }
+
+      // Start the autoplay loop
+      animationId = requestAnimationFrame(step);
+
+      // Mouse drag controls
+      slider.addEventListener("mousedown", (event) => {
+        isDragging = true;
+        isCooldowned = true; // Instantly halt autoplay transitions
+        moved = false;
+        slider.classList.add("is-dragging");
+        startX = event.pageX;
+        scrollLeft = slider.scrollLeft;
+        
+        // Sync accumulator to current physical position
+        scrollAccumulator = slider.scrollLeft;
+        
+        // Temporarily clear autoplay recovery timers during active drag
+        clearTimeout(autoplayTimer);
+      });
+
+      window.addEventListener("mousemove", (event) => {
+        if (!isDragging) return;
+
+        event.preventDefault();
+        const walk = event.pageX - startX;
+
+        if (Math.abs(walk) > 4) moved = true;
+        
+        // Update both physical container scroll and floating accumulator
+        const targetScroll = scrollLeft - walk;
+        slider.scrollLeft = targetScroll;
+        scrollAccumulator = slider.scrollLeft;
+      });
+
+      const handleMouseUp = () => {
+        if (!isDragging) return;
+
+        isDragging = false;
+        slider.classList.remove("is-dragging");
+        
+        // Sync accumulator once more
+        scrollAccumulator = slider.scrollLeft;
+        
+        // Wait 1.5 seconds cooldown period after drag release before resuming autoplay
+        clearTimeout(autoplayTimer);
+        isCooldowned = true;
+        autoplayTimer = setTimeout(() => {
+          isCooldowned = false;
+        }, 1500);
+      };
+
+      window.addEventListener("mouseup", handleMouseUp);
+
+      // Pause autoplay on mouse hover
+      slider.addEventListener("mouseenter", () => {
+        isHovered = true;
+      });
+
+      slider.addEventListener("mouseleave", () => {
+        isHovered = false;
+      });
+
+      slider.addEventListener("click", (event) => {
+        if (!moved) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+      }, true);
+    }
+
+    document.querySelectorAll(".content-image-grid").forEach((slider) => {
+      enableDragScroll(slider);
+    });
+
+    document.querySelectorAll(".content-image").forEach((image) => {
+      image.addEventListener("load", refreshOpenPanels);
+    });
+
+    window.addEventListener("resize", refreshOpenPanels);
+  </script>
+</body>
+</html>
